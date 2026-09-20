@@ -15,8 +15,8 @@
 
 __version__ = (1, 2, 3)
 # meta developer: @devuranium
-# meta banner: https://bannermods1.yuehost.xyz/tts_banner.jpg
-# meta pic: https://bannermods1.yuehost.xyz/tts_icon.jpg
+# meta banner: https://bannermods1.yuehost.xyz/photoreader_banner.jpg
+# meta pic: https://bannermods1.yuehost.xyz/photoreader_banner.jpg
 # scope: inline
 # meta dependencies: edge-tts
 
