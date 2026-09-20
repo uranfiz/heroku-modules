@@ -126,7 +126,7 @@ class PhotoReader(loader.Module):
         )
 
         if not has_photo:
-            await utils.answer(message, "🚫 Нужен реплай на фото или изображение.")
+            await utils.answer(message, "🚫 Нужен реплей на фото или изображение.")
             return
             
         await utils.answer(message, "🔍 Распознаю текст...")
