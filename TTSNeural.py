@@ -103,6 +103,7 @@ class TTSModule(loader.Module):
             pitch=f"{pitch:+d}Hz",
             volume=f"{volume:+d}%",
         )
+        
         audio_data = io.BytesIO()
         async for chunk in communicate.stream():
             if chunk["type"] == "audio":
