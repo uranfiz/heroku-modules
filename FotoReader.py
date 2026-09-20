@@ -16,7 +16,7 @@
 __version__ = (1, 2, 3)
 # meta developer: @devuranium
 # meta banner: https://bannermods1.yuehost.xyz/photoreader_banner.jpg
-# meta pic: https://bannermods1.yuehost.xyz/photoreader_banner.jpg
+# meta pic: https://bannermods1.yuehost.xyz/photoreader_icon.jpg
 # meta desc: распознаёт текст с фото по реплею
 # requires: pytesseract pillow aiohttp
 
@@ -64,12 +64,13 @@ class PhotoReader(loader.Module):
             await self._session.close()
 
     async def _ocr_local(self, image_bytes: bytes):
-      if not getattr(self, "_local_ok", False):
+        if not getattr(self, "_local_ok", False):
             return None
 
         def _run():
             import pytesseract
             from PIL import Image
+
             img = Image.open(io.BytesIO(image_bytes))
             try:
                 return pytesseract.image_to_string(img, lang="rus+eng")
@@ -77,7 +78,7 @@ class PhotoReader(loader.Module):
                 return pytesseract.image_to_string(img, lang="eng")
 
         try:
-            return await asyncio.get_event_loop().run_in_executor(None, _run)
+            return await asyncio.get_running_loop().run_in_executor(None, _run)
         except Exception:
             return None
 
@@ -116,7 +117,6 @@ class PhotoReader(loader.Module):
         """<реплей на фото> — распознать текст"""
         reply = await message.get_reply_message()
         target = reply or message
-
         has_photo = target and (
             target.photo
             or (
@@ -126,9 +126,9 @@ class PhotoReader(loader.Module):
         )
 
         if not has_photo:
-            await utils.answer(message, "🚫 Нужен реплей на фото или изображение.")
+            await utils.answer(message, "🚫 Нужен реплай на фото или изображение.")
             return
-
+            
         await utils.answer(message, "🔍 Распознаю текст...")
         try:
             buf = io.BytesIO()
@@ -137,13 +137,13 @@ class PhotoReader(loader.Module):
         except Exception as e:
             await utils.answer(message, f"⚠️ Не удалось скачать фото: {e}")
             return
+
         text = await self._ocr_local(image_bytes)
         if text is None:
             text = await self._ocr_online(image_bytes)
         if isinstance(text, str) and text.startswith("⚠️"):
             await utils.answer(message, text)
             return
-
         text = (text or "").strip()
         if not text:
             await utils.answer(message, "🤷 Текст на фото не найден.")
@@ -153,7 +153,10 @@ class PhotoReader(loader.Module):
             "<emoji document_id=5309901482890382924>📄</emoji> "
             "<b>Распознанный текст:</b>\n\n"
         )
-        max_len = 4000
+        max_len = 3500
         if len(text) > max_len:
             text = text[:max_len] + "\n… (обрезано)"
-        await utils.answer(message, header + f"<blockquote expandable>{text}</blockquote>")
+        await utils.answer(
+            message,
+            header + f"<blockquote expandable>{text}</blockquote>",
+        )
